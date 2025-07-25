@@ -59,7 +59,7 @@ def simulate_stage(stage: MCFStage):
                 bybit_fee = stage.bybit_capital * stage.bybit_leverage * stage.bybit_fee_rate
 
                 balance -= mcf_fee * 2
-                bybit_balance -= bybit_fee * 2
+                # bybit_balance -= bybit_fee * 2
 
                 # print("手續費:{}, {}".format(mcf_fee * 2, bybit_fee * 2))
 
@@ -152,9 +152,9 @@ def simulate_stage(stage: MCFStage):
 
             # print dailt info.
 
-            # mcf_trade_pnl = mcf_pnl
-            # bybit_trade_pnl = bybit_pnl - bybit_fee * 2
-            # mcf_total_return = (balance - stage.true_capital) / stage.true_capital * 100
+            mcf_trade_pnl = mcf_pnl
+            bybit_trade_pnl = bybit_pnl - bybit_fee * 2
+            mcf_total_return = (balance - stage.true_capital) / stage.true_capital * 100
 
             # print(
             #     f"第 {days} 天，第 {trades_today} 筆交易 | Move: {move*100:.2f}%\n"
@@ -189,9 +189,12 @@ def simulate_stage(stage: MCFStage):
 
 def simulate_full_exam():
     stages = [
-        MCFStage("第一階段", 300000, 276000, 0.00055, 0.0, 0.10, 0.1, 0.048, 0.036, 378, 23000, 0.0005, 1, 30, 5, 0.005, 0.012),
-        MCFStage("第二階段", 300000, 276000, 0.00055, 0.0, 0.05, 0.1, 0.048, 0.036, 0, 65000, 0.0005, 1, 30, 5, 0.005, 0.012),
-        MCFStage("第三階段", 300000, 276000, 0.00055, 0.8, 0.10, 0.1, 0.048, 0.036, 0, 76000, 0.0005, 1, 0, 5, 0.005, 0.012)
+        # MCFStage("第一階段", 300000, 276000, 0.00055, 0.0, 0.10, 0.1, 0.048, 0.036, 378, 23000, 0.0005, 1, 30, 5, 0.005, 0.012),
+        # MCFStage("第二階段", 300000, 276000, 0.00055, 0.0, 0.05, 0.1, 0.048, 0.036, 0, 65000, 0.0005, 1, 30, 5, 0.005, 0.012),
+        # MCFStage("第三階段", 300000, 276000, 0.00055, 0.8, 0.10, 0.1, 0.048, 0.036, 0, 76000, 0.0005, 1, 0, 5, 0.005, 0.012)
+        MCFStage("第一階段", 15000, 13800, 0.00055, 0.0, 0.10, 0.1, 0.048, 0.036, 55, 1150, 0.0005, 1, 30, 1, 0.005, 0.012),
+        MCFStage("第二階段", 15000, 13800, 0.00055, 0.0, 0.05, 0.1, 0.048, 0.036, 0, 3250, 0.0005, 1, 30, 1, 0.005, 0.012),
+        MCFStage("第三階段", 15000, 13800, 0.00055, 0.8, 0.10, 0.1, 0.048, 0.036, 0, 3800, 0.0005, 1, 0, 1, 0.005, 0.012)
     ]
 
     total_withdrawable = 0
@@ -211,21 +214,21 @@ def simulate_full_exam():
         if result["結果"] == "失敗":
             break
 
-    # print("\nMCF + Bybit 對沖模擬總結")
-    # for r in results:
-    #     print(f"\n📘 {r['階段']} - {r['結果']}")
-    #     print(f"用時：{r['天數']} 天")
-    #     print(f"MCF 最終資產：{r['最終資產(MCF)']}（{r['MCF報酬%']}%）")
-    #     print(f"Bybit 最終資產：{r['最終資產(Bybit)']}（盈虧：{round(r['最終資產(Bybit)'] - stages[results.index(r)].bybit_capital, 2)} USDT）")
-    #     print(f"可提領（MCF）：{r['可提領獲利']}  | 報名費：{r['報名費']}")
-    #     print(f"📌 總合損益：{r['總合損益']}")
+    print("\nMCF + Bybit 對沖模擬總結")
+    for r in results:
+        print(f"\n{r['階段']} - {r['結果']}")
+        print(f"用時：{r['天數']} 天")
+        print(f"MCF 最終資產：{r['最終資產(MCF)']}（{r['MCF報酬%']}%）")
+        print(f"Bybit 最終資產：{r['最終資產(Bybit)']}（盈虧：{round(r['最終資產(Bybit)'] - stages[results.index(r)].bybit_capital, 2)} USDT）")
+        print(f"可提領（MCF）：{r['可提領獲利']}  | 報名費：{r['報名費']}")
+        print(f"📌 總合損益：{r['總合損益']}")
 
-    # total_result = total_withdrawable + total_bybit_profit - total_signup_fee
-    # print("\n總結：")
-    # print(f"MCF 可提領：{round(total_withdrawable, 2)}")
-    # print(f"Bybit 總損益：{round(total_bybit_profit, 2)}")
-    # print(f"報名費總額：{total_signup_fee}")
-    # print(f"最終總合損益：{round(total_result, 2)}")
+    total_result = total_withdrawable + total_bybit_profit - total_signup_fee
+    print("\n總結：")
+    print(f"MCF 可提領：{round(total_withdrawable, 2)}")
+    print(f"Bybit 總損益：{round(total_bybit_profit, 2)}")
+    print(f"報名費總額：{total_signup_fee}")
+    print(f"最終總合損益：{round(total_result, 2)}")
 
 
 def simulate_multiple_runs(runs=1000):
@@ -235,9 +238,12 @@ def simulate_multiple_runs(runs=1000):
 
     for _ in trange(runs):
         stages = [
-            MCFStage("第一階段", 300000, 276000, 0.00055, 0.0, 0.10, 0.1, 0.048, 0.05, 378, 23000, 0.0005, 1, 30, 5, 0.005, 0.01),
-            MCFStage("第二階段", 300000, 276000, 0.00055, 0.0, 0.05, 0.1, 0.048, 0.05, 0, 65000, 0.0005, 1, 30, 5, 0.005, 0.01),
-            MCFStage("第三階段", 300000, 276000, 0.00055, 0.8, 0.10, 0.1, 0.048, 0.05, 0, 76000, 0.0005, 1, 0, 5, 0.005, 0.01)
+            # MCFStage("第一階段", 300000, 276000, 0.00055, 0.0, 0.10, 0.1, 0.048, 0.05, 378, 23000, 0.0005, 1, 30, 5, 0.005, 0.01),
+            # MCFStage("第二階段", 300000, 276000, 0.00055, 0.0, 0.05, 0.1, 0.048, 0.05, 0, 65000, 0.0005, 1, 30, 5, 0.005, 0.01),
+            # MCFStage("第三階段", 300000, 276000, 0.00055, 0.8, 0.10, 0.1, 0.048, 0.05, 0, 76000, 0.0005, 1, 0, 5, 0.005, 0.01)
+            MCFStage("第一階段", 15000, 13800, 0.00055, 0.0, 0.10, 0.1, 0.048, 0.036, 39, 1150, 0.0005, 1, 30, 3, 0.005, 0.01),
+            MCFStage("第二階段", 15000, 13800, 0.00055, 0.0, 0.05, 0.1, 0.048, 0.036, 0, 3250, 0.0005, 1, 30, 3, 0.005, 0.01),
+            MCFStage("第三階段", 15000, 13800, 0.00055, 0.8, 0.10, 0.1, 0.048, 0.036, 0, 3800, 0.0005, 1, 0, 3, 0.005, 0.01)
         ]
 
         total_withdrawable = 0
